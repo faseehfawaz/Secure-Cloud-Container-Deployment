@@ -1,0 +1,36 @@
+name: CI Pipeline
+
+# TRIGGER: When do we run?
+on:
+  push:
+    branches: [ "main" ]
+
+# JOBS: What do we do?
+jobs:
+  build-and-test:
+    # The computer the robot uses (GitHub provides this for free)
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Download your code from the repo
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Build the Docker image (just like you did locally)
+      - name: Build Docker Image
+        run: docker build -t my-secure-app .
+
+      # Step 3: Run the container in the background
+      - name: Start Container
+        run: docker run -d -p 8080:8080 --name test-container my-secure-app
+
+      # Step 4: Sleep for 5 seconds to let the server wake up
+      - name: Wait for Init
+        run: sleep 5
+
+      # Step 5: Run your health check script to prove it works
+      - name: Test Application
+        run: |
+          chmod +x check_site.sh
+          ./check_site.sh
+
