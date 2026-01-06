@@ -1,16 +1,20 @@
 FROM python:3.9-slim
 
+# Create a non-root user for security
+RUN useradd -m secureuser
 WORKDIR /app
 
-# --- SECURITY LAYER START ---
-# Create a user named 'secureuser' with a home directory (-m)
-RUN useradd -m secureuser
-
-# Switch to this user.
-# Any command after this line runs as 'secureuser', NOT root.
-USER secureuser
-# --- SECURITY LAYER END ---
-
+# Copy files
 COPY . .
 
-CMD ["python3", "-m", "http.server", "8080"]
+# Install dependencies (if you had any, mostly for Bandit)
+# RUN pip install flask (Not needed for this simple script)
+
+# Switch to secure user
+USER secureuser
+
+# Open Port 80
+EXPOSE 80
+
+# Run the server
+CMD ["python", "hello.py"]
