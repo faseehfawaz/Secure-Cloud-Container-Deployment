@@ -1,31 +1,28 @@
-# Secure Cloud Container Deployment ☁️🔒
+# Secure Cloud Container Deployment ☁️🛡️
 
-A DevSecOps project demonstrating the secure deployment of a containerized Python application to **Azure Container Instances (ACI)** using **Docker**, **Azure Container Registry (ACR)**, and security scanning tools.
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen) ![Security](https://img.shields.io/badge/security-hardened-blue) ![Azure](https://img.shields.io/badge/cloud-Azure-0078D4)
+
+A robust **DevSecOps** project demonstrating the end-to-end deployment of a secure Python web application to **Microsoft Azure**. This project integrates automated security scanning, Continuous Integration/Deployment (CI/CD), and infrastructure hardening.
 
 ## 🚀 Project Overview
 
-This project focuses on the intersection of **Cloud Computing** and **Security**. It moves beyond simple deployment by integrating industry-standard DevSecOps practices to ensure the application is not just functional, but secure.
+The goal of this project was to move beyond simple "Hello World" deployments and build a production-grade pipeline that automatically detects vulnerabilities and prevents insecure code from reaching the cloud.
 
 **Key Achievements:**
-* **Infrastructure as Code:** deployed resources via Azure CLI.
-* **Container Security:** Implemented non-root user execution and minimized attack surface.
-* **Cross-Platform Builds:** Solved ARM64 (Apple Silicon) vs. AMD64 (Azure) architecture conflicts using QEMU and multi-arch build strategies.
-* **Vulnerability Management:** Integrated SAST and Container Scanning.
+* **Automated CI/CD:** Full pipeline using GitHub Actions to build, scan, and deploy.
+* **Shift-Left Security:** Integrated **Bandit** (SAST) and **Trivy** (Container Scanning) to catch issues before deployment.
+* **Infrastructure Resilience:** Solved complex cross-platform architecture issues (ARM64 vs AMD64) for seamless Azure deployment.
 
-## 🛠️ Tech Stack
+## 🛠️ The DevSecOps Pipeline
 
-* **Cloud Provider:** Microsoft Azure (ACI, ACR)
-* **Containerization:** Docker
-* **Language:** Python 3.9 (Slim)
-* **Security Tools:**
-    * **Bandit:** Static Application Security Testing (SAST) for Python code.
-    * **Trivy:** Container image vulnerability scanning (SCA).
-    * **QEMU:** Emulation for building Intel/AMD images on ARM hardware.
+Every code push triggers the following automated workflow:
 
-## 📂 Project Structure
-
-```bash
-.
-├── Dockerfile          # Secure multi-stage build configuration
-├── hello.py            # The Python web application
-└── .github/workflows   # (Optional) CI/CD Pipeline configuration
+```mermaid
+graph LR
+  A[Push Code] --> B[Build Docker Image];
+  B --> C{Security Gates};
+  C -->|Fail| D[Block Deployment];
+  C -->|Pass| E[Push to Azure Registry];
+  C -- Bandit SAST --> C;
+  C -- Trivy Scan --> C;
+  E --> F[Deploy to Azure Container Instance];
